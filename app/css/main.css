@@ -1,0 +1,7 @@
+.center {
+  float:none;
+  margin:0 auto;
+}
+.inactive {
+  display:none;
+}

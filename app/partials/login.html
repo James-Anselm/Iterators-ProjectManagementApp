@@ -1,0 +1,18 @@
+<!--http://bootsnipp.com/snipps/sign-up-form-with-three-fields-->
+<div>
+  <div class="span6 well center">
+    <legend>Project Management App</legend>    
+    <h4>Login Here!</h4>
+    <form accept-charset="UTF-8" method="post">
+      <input class="span3" name="username" placeholder="Username" type="text"
+      ng-model="loginCredentials.username">
+      <input class="span3" name="password" placeholder="Password"
+      type="password" ng-model="loginCredentials.password"> 
+      <button class="btn btn-warning" type="submit"
+        ng-click="loginUser(loginCredentials)">Login!</button>
+    </form>
+    <h4>Sign up here!</h4>
+    <button class="btn btn-warning" type="submit"
+      ng-click="registerUser()">Sign up!</button>
+  </div>
+</div>
