@@ -1,52 +1,22 @@
+<img src={{registerStepImgPath}} class="register-stepImg"></img>
 <div id="register_page1">
-  <div class="span9 well center">
-    <form class="form-horizontal">
-      <h2>Step 1: Registration</h2>
-      <div class="control-group">
-        <label class="control-label" for="firstName">First Name</label>
-        <div class="controls">        
-          <input type="text" id="firstName" placeholder="First Name"
-          ng-model="register1.firstName">
-        </div>
-      </div>
-      <div class="control-group">
-        <label class="control-label" for="lastName">Last Name</label>
-        <div class="controls">        
-          <input type="text" id="lastName" placeholder="Last Name"
-          ng-model="register1.lastName">
-        </div>
-      </div>
-      <div class="control-group">
-        <label class="control-label" for="inputEmail">Email</label>
-        <div class="controls">
-          <input type="text" id="inputEmail" placeholder="Email"
-          ng-model="register1.email">
-        </div>
-      </div>
-      <div class="control-group">
-        <label class="control-label" for="confirmEmail">Confirm Email</label>
-        <div class="controls">
-          <input type="text" id="confirmEmail" placeholder="Confirm Email"
-          ng-model="register1.confirmEmail">
-        </div>
-      </div>
-      <div class="control-group">
-        <label class="control-label" for="inputPassword">Password</label>
-        <div class="controls">
-          <input type="password" id="inputPassword" placeholder="Password"
-          ng-model="register1.password">
-        </div>
-      </div>
-      <div class="control-group">
-        <label class="control-label" for="confirmPassword">Confirm Password</label>
-        <div class="controls">
-          <input type="password" id="confirmPassword" placeholder="Confirm
-          Password" ng-model="register1.confirmPassword">
-        </div>
-      </div>
-      <div class="control-group">
-        <div class="controls">
-          <button type="submit" class="btn"
+  <div class="span3 well center register" id="register-main">
+    <form class="form">
+      <h3>Step 1: Registration</h3>
+      <label for="registerName">Name</label>
+      <input type="text" id="registerName" placeholder="Name"
+      ng-model="register1.name">
+      <label for="registerEmail">Email</label>
+      <input type="text" id="registerEmail" placeholder="Email"
+      ng-model="register1.email">
+      <label class="control-label" for="registerPassword">Password</label>
+      <input type="password" id="registerPassword" placeholder="Password"
+      ng-model="register1.password">
+      <label class="control-label" for="registerConfirmPassword">Confirm Password</label>
+      <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" ng-model="register1.confirmPassword">
+      <div class="row">
+        <div class="span1 offset2">
+          <button type="submit" class="btn btn-success"
             ng-click="registerUser_page1(register1)">Next</button>
         </div>
       </div>
@@ -54,54 +24,53 @@
   </div>
 </div>
 <div id="register_page2" class="inactive">
-  <div class="span9 well center">
-    <form class="form-horizontal">
-      <div class="control-group">
-        <label class="control-label" for="travelTime">Travel</label>
-        <div class="controls">
-          <input type="text" class="input-small" id="travelTime"
+  <div class="span7 row well center register" id="register-main">
+    <h2>Step 2: Schedule Information</h2>
+    <form>
+      <div class="span3 row">
+        <div class="row">
+          <img src="img/transportation.png" class="span1"></img>
+          <label class="control-label span1" for="travelTime">Travel</label>
+          <input type="text" class="input-small span1" id="travelTime"
           placeholder="2" ng-model="register2.travelTime">
         </div>
-      </div>
-      <div class="control-group">
-        <label class="control-label" for="sleepTime">Sleep</label>
-        <div class="controls">
-          <input type="text" class="input-small" id="sleepTime" placeholder="8"
+        <div class="row">
+          <img src="img/sleep.png" class="span1"></img>
+          <label class="control-label span1" for="sleepTime">Sleep</label>
+          <input type="text" class="input-small span1" id="sleepTime" placeholder="8"
           ng-model="register2.sleepTime">
         </div>
-      </div>
-      <div class="control-group">
-        <label class="control-label" for="eatingTime">Eating</label>
-        <div class="controls">
-          <input type="text" class="input-small" id="eatingTime" placeholder="1"
+        <div class="row">
+          <img src="img/eat.png" class="span1"></img>
+          <label class="control-label span1" for="eatingTime">Eating</label>
+          <input type="text" class="input-small span1" id="eatingTime" placeholder="1"
           ng-model="register2.eatingTime">
         </div>
-      </div>"
-      <div class="control-group">
-        <label class="control-label" for="personalTime">Personal</label>
-        <div class="controls">
-          <input type="text" class="input-small" id="personalTime"
+        <div class="row">
+          <img src="img/personal.png" class="span1"></img>
+          <label class="control-label span1" for="personalTime">Personal</label>
+          <input type="text" class="input-small span1" id="personalTime"
           placeholder="2" ng-model="register2.personalTime">
         </div>
-      </div>
-      <div class="control-group">
-        <label class="control-label" for="otherTime">Other</label>
-        <div class="controls">
-          <input type="text" class="input-small" id="otherTime" placeholder="1"
+        <div class="row">
+          <img src="img/other.png" class="span1"></img>
+          <label class="control-label span1" for="otherTime">Other</label>
+          <input type="text" class="input-small span1" id="otherTime" placeholder="1"
           ng-model="register2.otherTime">
         </div>
       </div>
-      <div class="control-group">
-        <div class="controls">
-          <button type="submit" class="btn"
-            ng-click="registerUser_page2(register2)">Register!</button>
-        </div>
+      <div class="span3">
+        <div id="chart_div" style="width: 200px; height: 200px;"></div>
+      </div>
+      <div class="span6 offset4 row">
+        <button type="submit" class="btn" ng-click="registerUser_page2(register2)">Register!</button>
       </div>
     </form>
   </div>
 </div>
 <div id="register_page3" class="inactive">
-  <div class="span9 well center">
+  <div class="span3 well center register" id="register-main">
+    <h2>Step 3: Get Started!</h2>
     <button class="btn" ng-click="toDashboard()">View Dashboard</button>
     <button class="btn" ng-click="toCreateProject()">Create a Project</button>
   </div>
