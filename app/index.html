@@ -17,11 +17,13 @@
 <script src="js/controllers.js"></script>
 </head>
 <body>
-<div class="span9 well center register" id="register-header">
+<div class="navbar navbar-fixed-top register" id="header">
   <h1>HEADING</h1>
 </div>
-<div ng-view></div>
-<div class="span9 well center register" id="register-footer">
+<div id="content-wrapper">
+<div ng-view id="content"></div>
+</div>
+<div class="navbar navbar-fixed-bottom register" id="footer">
   footer contents
 </div>
 </body>

@@ -1,26 +1,50 @@
+html {
+  height:100%;
+}
+
+body {
+  height:100%;
+}
+
 .center {
   float:none;
   margin:0 auto;
 }
+
 .inactive {
   display:none;
 }
+
 .register {
   background-color: rgb(19,172,163);
   color: white;
 }
+
 .register label {
   color:white;
 }
-#register-header {
+
+#header {
   margin-bottom:20px;
+  min-height:10%;
 }
-#register-footer {
+
+#content-wrapper {
+  display:table;
+  height:100%;
+  width:100%;
+}
+
+#content {
+  display:table-cell;
+  vertical-align:middle;
+}
+
+#footer {
   margin-top:20px;
+  min-height:10%;
 }
-#register-main {
-  margin-top:20px;
-}
+
 .register-stepImg {
   display: block;
   margin-left: auto;
@@ -28,7 +52,6 @@
   width:50%;
 }
 
-#register_page2 form img {
-  height:30px;
-  width:auto;
+#register-pieChart {
+  overflow:hidden;
 }
