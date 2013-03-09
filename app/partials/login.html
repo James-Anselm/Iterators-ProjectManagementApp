@@ -2,16 +2,19 @@
 <div>
   <div class="span3 well center register">
     <h4>Login Here!</h4>
+    <br/>
     <form accept-charset="UTF-8" method="post">
-      <input class="span3" name="username" placeholder="Username" type="text"
+      <input class="span3" name="username" placeholder="Username" type="email"
       ng-model="loginCredentials.username"><br/>
       <input class="span3" name="password" placeholder="Password"
       type="password" ng-model="loginCredentials.password"><br/>   
+      <br/>
       <button class="btn btn-warning" type="submit"
-        ng-click="loginUser(loginCredentials)">Login!</button>
+        ng-click="loginUser(loginCredentials)">Login</button>
     </form>
     <h4>Sign up here!</h4>
+    <br/>
     <button class="btn btn-warning" type="submit"
-      ng-click="registerUser()">Sign up!</button>
+      ng-click="registerUser()">Sign up</button>
   </div>
 </div>

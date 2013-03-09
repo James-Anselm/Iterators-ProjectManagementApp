@@ -1,18 +1,39 @@
+
 <div id="register_page">
   <div class="span3 well center register">
     <form class="form">
       <h3>Registration</h3>
+      <br/>
       <label for="registerName">Name</label>
-      <input type="text" id="registerName" placeholder="Name"
+      <input type="text" id="registerName" 
       ng-model="register.name">
       <label for="registerEmail">Email</label>
-      <input type="text" id="registerEmail" placeholder="Email"
+      <input type="text" id="registerEmail"
       ng-model="register.email">
-      <label class="control-label" for="registerPassword">Password</label>
+      <!-- <label class="control-label" for="registerPassword">Password</label>
       <input type="password" id="registerPassword" placeholder="Password"
       ng-model="register.password">
       <label class="control-label" for="registerConfirmPassword">Confirm Password</label>
-      <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" ng-model="register.confirmPassword">
+      <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" ng-model="register.confirmPassword">  -->
+
+
+<label for="registerPassword">Password</label>
+<input type="password" id="password" required>
+
+<label for="registerPassword">Confirm Password</label>
+<input 
+  type="password"
+  name="passwordconfirmation"
+  data-validation-matches-match="password" 
+  data-validation-matches-message=
+    "Passwords do not match!" 
+>
+
+
+
+<br/>
+<br/>
+
       <div class="row">
         <div class="span1 offset2">
           <button type="submit" class="btn btn-success"

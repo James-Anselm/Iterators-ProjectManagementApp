@@ -55,3 +55,20 @@ body {
 #register-pieChart {
   overflow:hidden;
 }
+
+.dashboard-header {
+  margin-bottom: 20px;
+  min-height: 15%;
+}
+
+.dashboard-projects {
+  float: left;
+  width: 25%;
+}
+
+.dashboard-bars {
+  float: right;
+  width: 75%;
+}
+
+
