@@ -1,0 +1,25 @@
+<div id="createMilestone_page">
+  <div class="span3 well center register">
+    <form class="form" id="form-register">
+      <h3>Create Milestone</h3>
+      <label for="milestoneProject">Project</label>
+      <select ng-model="milestone.project" ng-options="project as
+        project.attributes.Name for project in projects"></select>
+      <label for="milestoneName">Name</label>
+      <input type="text" id="milestoneName" placeholder="Name"
+      ng-model="milestone.name">
+      <label for="milestoneDescription">Description</label>
+      <input type="text" id="milestoneDescription" placeholder="Description"
+      ng-model="milestone.description">
+      <label class="control-label" for="milestoneWeek">Week</label>
+      <input type="week" id="milestoneWeek" placeholder="Week"
+      ng-model="milestone.week">
+      <label class="control-label" for="milestoneWeight">Weight</label>
+      <input type="number" id="milestoneWeight" placeholder="1"
+      ng-model="milestone.weight">
+      <button type="submit" class="btn btn-register span3"
+        ng-click="createMilestone(milestone)">Create Milestone!</button>
+    </div>
+  </form>
+</div>
+</div>

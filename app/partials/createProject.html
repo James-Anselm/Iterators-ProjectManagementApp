@@ -1,1 +1,22 @@
-<p>Placeholder for the create project view</p>
+<div id="createProject_page">
+  <div class="span3 well center register">
+    <form class="form" id="form-register">
+      <h3>Create Project</h3>
+      <label for="projectName">Name</label>
+      <input type="text" id="projectName" placeholder="Name"
+      ng-model="project.name">
+      <label for="projectDescription">Description</label>
+      <input type="text" id="projectDescription" placeholder="Description"
+      ng-model="project.description">
+      <label class="control-label" for="projectStart">Start Week</label>
+      <input type="week" id="projectStart" placeholder="Start Week"
+      ng-model="project.start">
+      <label class="control-label" for="projectEnd">End Week</label>
+      <input type="week" id="projectEnd" placeholder="End Week"
+      ng-model="project.end">
+      <button type="submit" class="btn btn-register span3"
+        ng-click="createProject(project)">Create Project!</button>
+    </div>
+  </form>
+</div>
+</div>

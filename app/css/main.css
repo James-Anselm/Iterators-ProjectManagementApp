@@ -56,17 +56,41 @@ body {
   overflow:hidden;
 }
 
-.dashboard-header {
-  margin-bottom: 20px;
-  min-height: 15%;
+.btn-login, .btn-signup, .btn-register {
+  background-color: hsl(99, 53%, 53%) !important;
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#afde95", endColorstr="#74c647");
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#afde95), to(#74c647));
+  background-image: -moz-linear-gradient(top, #afde95, #74c647);
+  background-image: -ms-linear-gradient(top, #afde95, #74c647);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #afde95), color-stop(100%, #74c647));
+  background-image: -webkit-linear-gradient(top, #afde95, #74c647);
+  background-image: -o-linear-gradient(top, #afde95, #74c647);
+  background-image: linear-gradient(#afde95, #74c647);
+  border-color: #74c647 #74c647 hsl(99, 53%, 48%);
+  color: #FFF !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.33);
+  -webkit-font-smoothing: antialiased;
+  font-weight:bold;
+  margin-left:0px;//span class added left margin
 }
 
-.dashboard-projects {
-  float: left;
-  width: 25%;
+#register-well {
+  padding-bottom:40px;
 }
 
-.dashboard-bars {
-  float: right;
-  width: 75%;
+#form-login {
+  padding-bottom:30px;
+}
+
+#form-register {
+  padding-bottom:10px;
+}
+
+h4 {
+  padding-bottom:10px;
+}
+
+h4 {
+  padding-bottom:10px;
 }
