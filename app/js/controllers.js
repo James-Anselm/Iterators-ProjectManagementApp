@@ -8,6 +8,8 @@ function DashboardCtrl($scope, $location){
   var weeks = [];
   var milestones = [];
   var projects = [];
+  var milestoneQueryCompleted = false;
+  var projectQueryCompleted = false;
 
   $scope.logout = function() {
     Parse.User.logOut();
@@ -23,17 +25,39 @@ function DashboardCtrl($scope, $location){
   }
 
   function getAllMilestones() {
+    milestoneQueryCompleted = false;
     var milestoneQuery = new Parse.Query("Milestone");
     milestoneQuery.equalTo("UserID", Parse.User.current().id);
     milestoneQuery.find({
       success: function(milestones){
                  $scope.$apply(function() {
                    $scope.parse_milestones = milestones;
-                   processMilestones();
-                   //update graph
+                   milestoneQueryCompleted = true;
+                   postQuerying();
                  });
                }
     });
+  }
+
+  function getAllProjects() {
+    projectQueryCompleted = false;
+    var projectQuery = new Parse.Query("Project");
+    projectQuery.equalTo("UserID", Parse.User.current().id);
+    projectQuery.find({
+      success: function(projects){
+                 $scope.$apply(function() {
+                   $scope.parse_projects = projects;
+                   projectQueryCompleted = true;
+                   postQuerying();
+                 });
+               }
+    });
+  }
+
+  function postQuerying() {
+    if(milestoneQueryCompleted && projectQueryCompleted) {
+      processMilestones();
+    }
   }
 
   function processMilestones() {
@@ -47,12 +71,12 @@ function DashboardCtrl($scope, $location){
     for(var i=0; i<$scope.parse_milestones.length; i++){
       var weekStr = week_numToString( week_objToNum( $scope.parse_milestones[i].get("Week") ) );
       var projectID = $scope.parse_milestones[i].get("ProjectID");
-      var weight = $scope.parse_milestones[i].get("Weight");
       for(var j=0; j<weeks.length; j++){
         if(weekStr == weeks[j]){
           for(var k=0; k<projects.length; k++) {
             if(projects[k].projectID == projectID) {
-              projects[k].milestones[j] += weight;
+              projects[k].milestones[j] += $scope.parse_milestones[i].get("Weight");
+              projects[k].milestoneNames[weekStr] = $scope.parse_milestones[i].get("Name");
               break;
             }
           }
@@ -105,12 +129,21 @@ function DashboardCtrl($scope, $location){
       for(var k=0; k<projects.length; k++) {
         if(projects[k].projectID == projectID) {
           added = true;
+          break;
         }
       }
       if(!added) {
         var newArray = new Array(weeks.length);
-        for(var j=0; j<newArray.length; j++) newArray[j] = 0;
-        projects.push({projectID: projectID, milestones: newArray});
+        for(var j=0; j<newArray.length; j++) {
+          newArray[j] = 0;
+        }
+        var projectName;
+        for(var k=0; k<$scope.parse_projects.length; k++) {
+          if($scope.parse_projects[k].id == projectID) {
+            projects.push({projectID: projectID, name: $scope.parse_projects[k].get("Name"), milestones: newArray, milestoneNames: []});
+            break;
+          }
+        }
       }
     }
   }
@@ -118,7 +151,7 @@ function DashboardCtrl($scope, $location){
   function initializeChart() {
     var series = [];
     for(var i=0; i<projects.length; i++) {
-      series.push({type: 'column', name: projects[i].projectID, data: projects[i].milestones});
+      series.push({type: 'column', name: projects[i].name, projectId: projects[i].projectID, data: projects[i].milestones, milestoneNames: projects[i].milestoneNames});
     }
 
     chart = new Highcharts.Chart({
@@ -131,7 +164,7 @@ function DashboardCtrl($scope, $location){
       xAxis: {
         categories: weeks,
         labels: {
-          //enabled: false
+          enabled: false
         }
       },
       yAxis: {
@@ -140,6 +173,14 @@ function DashboardCtrl($scope, $location){
         },
         title: {
           enabled: false
+        }
+      },
+      tooltip:{
+        formatter: function() {
+          var s = 'Project: <b>'+ this.series.name + '</b><br>' + 
+                  'Milestone: <b>' + this.series.options.milestoneNames[this.key] + '</b><br>' +
+                  'Date: <b>' + this.key + '</b><br>';
+          return s;
         }
       },
       plotOptions: {
@@ -166,8 +207,8 @@ function DashboardCtrl($scope, $location){
 
   $(function () {
     $(document).ready(function() {
-      //initializeChart();
       getAllMilestones();
+      getAllProjects();
     });
   });
 
