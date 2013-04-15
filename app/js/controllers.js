@@ -1,6 +1,14 @@
 'use strict'
 
 function DashboardCtrl($scope, $location){
+
+  //the chart for displaying milestone data for projects.
+  var chart;
+  $scope.parse_milestones = [];
+  var weeks = [];
+  var milestones = [];
+  var projects = [];
+
   $scope.logout = function() {
     Parse.User.logOut();
     $location.path("/login");
@@ -14,77 +22,154 @@ function DashboardCtrl($scope, $location){
     $location.path('/createmilestone');
   }
 
-$(function () {
-    var chart;
-    $(document).ready(function() {
-        chart = new Highcharts.Chart({
-            chart: {
-                renderTo: 'container'
-            },
-            title: {
-                text: 'Milestones Chart'
-            },
-            xAxis: {
-                categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week ']
-            },
-            tooltip: {
-                formatter: function() {
-                    var s;
-                    if (this.point.name) { // the pie chart
-                        s = ''+
-                            this.point.name +': '+ this.y +' fruits';
-                    } else {
-                        s = ''+
-                            this.x  +': '+ this.y;
-                    }
-                    return s;
-                }
-            },
-            plotOptions: {
-                column: {
-                    stacking: 'normal',
-                    dataLabels: {
-                        enabled: true,
-                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
-                    }
-                }
-            },
-            labels: {
-                items: [{
-                    html: 'label',
-                    style: {
-                        left: '40px',
-                        top: '8px',
-                        color: 'black'
-                    }
-                }]
-            },
-            series: [{
-                type: 'column',
-                name: 'Project1',
-                data: [3, 2, 1, 3, 4]
-            }, {
-                type: 'column',
-                name: 'Project2',
-                data: [2, 3, 5, 7, 6]
-            }, {
-                type: 'column',
-                name: 'Project3',
-                data: [4, 3, 3, 9, 0]
-            }, {
-                type: 'spline',
-                name: 'Projected Workload',
-                data: [10, 9, 3, 6.33, 9],
-                marker: {
-                  lineWidth: 2,
-                  lineColor: Highcharts.getOptions().colors[3],
-                  fillColor: 'white'
-                }
-            },]
-        });
+  function getAllMilestones() {
+    var milestoneQuery = new Parse.Query("Milestone");
+    milestoneQuery.equalTo("UserID", Parse.User.current().id);
+    milestoneQuery.find({
+      success: function(milestones){
+                 $scope.$apply(function() {
+                   $scope.parse_milestones = milestones;
+                   processMilestones();
+                   //update graph
+                 });
+               }
     });
+  }
+
+  function processMilestones() {
+    setWeeksArray();
+    getProjectsFromMilestones();
+    populateMilestoneArrays();
+    initializeChart();
+  }
+
+  function populateMilestoneArrays() {
+    for(var i=0; i<$scope.parse_milestones.length; i++){
+      var weekStr = week_numToString( week_objToNum( $scope.parse_milestones[i].get("Week") ) );
+      var projectID = $scope.parse_milestones[i].get("ProjectID");
+      var weight = $scope.parse_milestones[i].get("Weight");
+      for(var j=0; j<weeks.length; j++){
+        if(weekStr == weeks[j]){
+          for(var k=0; k<projects.length; k++) {
+            if(projects[k].projectID == projectID) {
+              projects[k].milestones[j] += weight;
+              break;
+            }
+          }
+        break;
+        }
+      }
+    }
+  }
+
+  function setWeeksArray() {
+    var range = getWeekRange();
+    weeks = [];
+    for(var i=0; i<(range.high-range.low); i++) {
+      weeks.push( week_numToString(range.low+i) );
+    }
+  }
+
+  function week_numToString(weekNum){
+    return "W" + weekNum%52 + " Y" + parseInt( (weekNum/52) );
+  }
+
+  function week_stringToNum(weekStr){
+    var week = parseInt( weekStr.match(/W([^}]*) /)[1] ) + 52*parseInt( test2.match( /Y(.*)/ )[1] );
+  }
+
+  function week_objToNum(weekObj) {
+    return weekObj.year*52 + weekObj.week;
+  }
+
+  function getWeekRange() {
+    var range = {low: -1, high: -1};
+    for(var i=0; i<$scope.parse_milestones.length; i++) {
+      var weekNumber = week_objToNum($scope.parse_milestones[i].get("Week"));
+      if(weekNumber < range.low || range.low < 0) {
+        range.low = weekNumber;
+      }
+      if(weekNumber > range.high) {
+        range.high = weekNumber;
+      }
+    }
+    return range;
+  }
+
+  function getProjectsFromMilestones() {
+    projects = [];
     
-});
+    for(var i=0; i<$scope.parse_milestones.length; i++){
+      var projectID = $scope.parse_milestones[i].get("ProjectID");
+      var added = false;
+      for(var k=0; k<projects.length; k++) {
+        if(projects[k].projectID == projectID) {
+          added = true;
+        }
+      }
+      if(!added) {
+        var newArray = new Array(weeks.length);
+        for(var j=0; j<newArray.length; j++) newArray[j] = 0;
+        projects.push({projectID: projectID, milestones: newArray});
+      }
+    }
+  }
+
+  function initializeChart() {
+    var series = [];
+    for(var i=0; i<projects.length; i++) {
+      series.push({type: 'column', name: projects[i].projectID, data: projects[i].milestones});
+    }
+
+    chart = new Highcharts.Chart({
+      chart: {
+        renderTo: 'container'
+      },
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: weeks,
+        labels: {
+          //enabled: false
+        }
+      },
+      yAxis: {
+        labels: {
+          enabled: false 
+        },
+        title: {
+          enabled: false
+        }
+      },
+      plotOptions: {
+        column: {
+          stacking: 'normal',
+          dataLabels: {
+            //enabled: true,
+            color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+          }
+        }
+      },
+      labels: {
+        items: [{
+          style: {
+            left: '40px',
+            top: '8px',
+            color: 'black'
+          }
+        }]
+      },
+      series: series
+    });//end new chart line.
+  }//end initializeChart()
+
+  $(function () {
+    $(document).ready(function() {
+      //initializeChart();
+      getAllMilestones();
+    });
+  });
 
 
 }
@@ -94,15 +179,15 @@ function LoginCtrl($scope, $location) {
   $scope.loginUser = function(loginCredentials) {
     Parse.User.logIn(loginCredentials.username, loginCredentials.password, {
       success: function(user) {
-        // Do stuff after successful login.
-        $scope.$apply(function(){
-          $location.path('/dashboard');
-        });
-      },
-      error: function(user, error) {
-        // The login failed. Check error to see why.
-        alert("Error: " + error.code + " " + error.message);
-      }
+                 // Do stuff after successful login.
+                 $scope.$apply(function(){
+                   $location.path('/dashboard');
+                 });
+               },
+    error: function(user, error) {
+             // The login failed. Check error to see why.
+             alert("Error: " + error.code + " " + error.message);
+           }
     });
   }
 
@@ -118,17 +203,17 @@ function RegisterCtrl($scope, $location) {
     var error;
     if(register) {
       if(register.name)
-       user.set("name", register.name);
+        user.set("name", register.name);
       if(register.password && register.confirmPassword && register.password.length > 5 && register.password == register.confirmPassword)
-       user.set("password", register.password);
+        user.set("password", register.password);
       else
-       error = "the password entries weren't valid."
-      if(register.email) {
-       user.set("email", register.email);
-       user.set("username", register.email);
-      }
-      else
-       error = "the email entry wasn't valid."
+        error = "the password entries weren't valid."
+          if(register.email) {
+            user.set("email", register.email);
+            user.set("username", register.email);
+          }
+          else
+            error = "the email entry wasn't valid."
     }
     else {
       error = "please fill in the registration form";
@@ -137,14 +222,14 @@ function RegisterCtrl($scope, $location) {
     if(!error) {
       user.signUp(null, {
         success: function(user) {
-           $scope.$apply(function(){
-              $location.path('/dashboard');
-           });
-        },
+                   $scope.$apply(function(){
+                     $location.path('/dashboard');
+                   });
+                 },
         error: function(user, error) {
-          // Show the error message somewhere and let the user try again.
-          alert("Error: " + error.code + " " + error.message);
-        }
+                 // Show the error message somewhere and let the user try again.
+                 alert("Error: " + error.code + " " + error.message);
+               }
       }); 
     }
     else
@@ -175,16 +260,16 @@ function CreateProjectCtrl($scope, $location){
     var error;
     if(project) {
       if(project.name)
-       newProject.set("Name", project.name);
+        newProject.set("Name", project.name);
       else
-       error = "please enter a valid project name";
+        error = "please enter a valid project name";
       if(project.description)
-       newProject.set("Description", project.name);
+        newProject.set("Description", project.name);
       if(project.start)
         newProject.set("StartWeek", parseWeekInput(project.start));
       if(project.end)
         newProject.set("EndWeek", parseWeekInput(project.end));
-      newProject.relation("User").add(Parse.User.current());
+      newProject.set("UserID", Parse.User.current().id);
     }
     else {
       error = "please fill in the create project form";
@@ -193,14 +278,14 @@ function CreateProjectCtrl($scope, $location){
     if(!error) {
       newProject.save(null, {
         success: function(newProject) {
-           $scope.$apply(function(){
-              $location.path('/dashboard');
-           });
-        },
+                   $scope.$apply(function(){
+                     $location.path('/dashboard');
+                   });
+                 },
         error: function(newProject, error) {
-          // Show the error message somewhere and let the user try again.
-          alert("Error: " + error.code + " " + error.message);
-        }
+                 // Show the error message somewhere and let the user try again.
+                 alert("Error: " + error.code + " " + error.message);
+               }
       }); 
     }
     else
@@ -223,7 +308,7 @@ function CreateMilestoneCtrl($scope, $location){
   var newMilestone = new projectObj();
 
   var projectQuery = new Parse.Query("Project");
-  projectQuery.equalTo("User", Parse.User.current());
+  projectQuery.equalTo("UserID", Parse.User.current().id);
   projectQuery.find({
     success: function(projects){
                $scope.$apply(function() {
@@ -236,17 +321,17 @@ function CreateMilestoneCtrl($scope, $location){
     var error;
     if(milestone) {
       if(milestone.name)
-       newMilestone.set("Name", milestone.name);
+        newMilestone.set("Name", milestone.name);
       else
-       error = "please enter a valid milestone name";
+        error = "please enter a valid milestone name";
       if(milestone.description)
-       newMilestone.set("Description", milestone.name);
+        newMilestone.set("Description", milestone.name);
       if(milestone.week)
         newMilestone.set("Week", parseWeekInput(milestone.week));
       if(milestone.weight)
         newMilestone.set("Weight", milestone.weight);
-      newMilestone.relation("User").add(Parse.User.current());
-      newMilestone.relation("Project").add(milestone.project);
+      newMilestone.set("UserID", Parse.User.current().id);
+      newMilestone.set("ProjectID", milestone.project.id);
     }
     else {
       error = "please fill in the create milestone form";
@@ -255,14 +340,14 @@ function CreateMilestoneCtrl($scope, $location){
     if(!error) {
       newMilestone.save(null, {
         success: function(newMilestone) {
-           $scope.$apply(function(){
-              $location.path('/dashboard');
-           });
-        },
+                   $scope.$apply(function(){
+                     $location.path('/dashboard');
+                   });
+                 },
         error: function(newMilestone, error) {
-          // Show the error message somewhere and let the user try again.
-          alert("Error: " + error.code + " " + error.message);
-        }
+                 // Show the error message somewhere and let the user try again.
+                 alert("Error: " + error.code + " " + error.message);
+               }
       }); 
     }
     else
