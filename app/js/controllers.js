@@ -65,7 +65,7 @@ function DashboardCtrl($scope, $location){
   function setWeeksArray() {
     var range = getWeekRange();
     weeks = [];
-    for(var i=0; i<(range.high-range.low); i++) {
+    for(var i=0; i<=(range.high-range.low); i++) {
       weeks.push( week_numToString(range.low+i) );
     }
   }
